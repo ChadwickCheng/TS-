@@ -23,3 +23,10 @@ class Singer implements Singable {
   sing(){console.log('sing')}
   a = 1
 }
+
+/*
+在 TypeScript 中，extends 关键字主要在以下三种情况下使用：
+  1. 类继承类
+  2. 接口继承接口
+  3. 泛型约束
+*/
