@@ -1,53 +1,50 @@
-/*
-装饰器：修饰类
-本身是一个函数
+const userInfo: any = undefined;
 
-类创建后立即执行
-类装饰器接受的参数是构造函数
-多个装饰器执行顺序：从下往上 从右往左
-
-使用工厂函数模式控制装饰器的可用性
-*/
-
-// function testDecorator(constructor: any): any{
-//   constructor.prototype.getName = () => {
-//     console.log('kuonji');
+// class Test{
+//   getNMame(){
+//     try {
+//       return userInfo.name;
+    
+//     }catch(e){
+//       console.log('userInfo.name不存在');
+//     }
 //   }
-//   console.log('decorator');
+//   getAge(){
+//     try {
+//       return userInfo.age;
+//     }catch(e){
+//       console.log('userInfo.age不存在');
+//     }
+//   }
 // }
-
-// function testDecorator1(constructor: any): any{
-//   console.log('decorator1');
-// }
-
-// @testDecorator
-// @testDecorator1
-// class Test {
-
-// }
-// const test = new Test();
-// (test as any).getName()
-
-
-
-
-// ----------------------------
-
-function testDecorator(flag: boolean){
-  if(flag){
-    return function(constructor: any){
-      constructor.prototype.getName = () => {
-        console.log('kuonji');
+function catchErr(msg: string){
+  return function (target:any, key: string, descriptor: PropertyDescriptor){
+    const fn = descriptor.value;
+    descriptor.value = function(){
+      try {
+        fn();
+      }catch(e){
+        // console.log('error:', e);
+        console.log(msg);
       }
     }
-  }else{
-    return function(constructor: any){}
   }
 }
 
-@testDecorator(true)
-class Test {
-
+class Test{
+  @catchErr('userInfo.name不存在')
+  getNMame(){
+    return userInfo.name;
+  }
+  @catchErr('userInfo.age不存在')
+  getAge(){
+    return userInfo.age;
+  }
 }
+
 const test = new Test();
-(test as any).getName()
+console.log(test.getNMame());
+
+/*
+每个方法都要写try catch，代码冗余，使用装饰器模式，抽离try catch
+*/
